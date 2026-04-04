@@ -36,7 +36,9 @@ export function activate(context: vscode.ExtensionContext): void {
         { title: 'Remove Workspace from Window', placeHolder: 'Select a workspace to remove' }
       );
       if (!pick) { return; }
-      registry.remove(pick.description!);
+      const filePath = pick.description;
+      if (!filePath) { return; }
+      registry.remove(filePath);
       tabBar.refresh();
     }),
 

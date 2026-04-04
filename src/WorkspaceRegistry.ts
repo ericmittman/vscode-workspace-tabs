@@ -2,6 +2,7 @@ import { WorkspaceEntry } from './types';
 import { assignColor } from './colors';
 
 const REGISTRY_KEY = 'workspaceTabs.registry';
+const COUNT_KEY = 'workspaceTabs.totalAdded';
 
 interface Memento {
   get<T>(key: string, defaultValue: T): T;
@@ -22,7 +23,9 @@ export class WorkspaceRegistry {
     }
     const filename = filePath.split(/[\\/]/).pop() ?? filePath;
     const name = filename.replace(/\.code-workspace$/, '');
-    const color = assignColor(entries.length);
+    const totalAdded = this.state.get<number>(COUNT_KEY, 0);
+    const color = assignColor(totalAdded);
+    this.state.update(COUNT_KEY, totalAdded + 1);
     this.state.update(REGISTRY_KEY, [...entries, { name, path: filePath, color }]);
   }
 

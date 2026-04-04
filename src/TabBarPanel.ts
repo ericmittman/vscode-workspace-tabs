@@ -23,6 +23,7 @@ export class TabBarPanel {
       { enableScripts: true, retainContextWhenHidden: true }
     );
     this.disposed = false;
+    this.context.subscriptions.push(this.panel);
 
     this.panel.onDidDispose(() => { this.disposed = true; });
 
@@ -65,10 +66,11 @@ export class TabBarPanel {
       const bg = isActive ? hexToRgba(e.color, 0.15) : 'transparent';
       const borderColor = isActive ? e.color : 'transparent';
       const textColor = isActive ? '#ffffff' : '#888888';
-      const safePath = e.path.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+      const safePathAttr = e.path.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
       return `<div class="tab${isActive ? ' active' : ''}"
+                   data-path="${safePathAttr}"
                    style="background:${bg};border-bottom:3px solid ${borderColor};color:${textColor};"
-                   onclick="switchTo('${safePath}')">${escapeHtml(e.name)}</div>`;
+                   >${escapeHtml(e.name)}</div>`;
     }).join('');
 
     return `<!DOCTYPE html>
@@ -110,11 +112,17 @@ export class TabBarPanel {
 </head>
 <body>
   ${tabs}
-  <div class="add-btn" onclick="addWorkspace()" title="Add Workspace to Window">+</div>
+  <div class="add-btn" title="Add Workspace to Window">+</div>
   <script>
     const vscode = acquireVsCodeApi();
-    function switchTo(path) { vscode.postMessage({ command: 'switchWorkspace', path }); }
-    function addWorkspace() { vscode.postMessage({ command: 'addWorkspace' }); }
+    document.querySelectorAll('.tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        vscode.postMessage({ command: 'switchWorkspace', path: tab.dataset.path });
+      });
+    });
+    document.querySelector('.add-btn').addEventListener('click', function() {
+      vscode.postMessage({ command: 'addWorkspace' });
+    });
   </script>
 </body>
 </html>`;
