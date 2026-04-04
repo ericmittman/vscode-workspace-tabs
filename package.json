@@ -8,8 +8,40 @@
   "activationEvents": ["onStartupFinished"],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [],
-    "menus": {}
+    "commands": [
+      {
+        "command": "workspaceTabs.addWorkspace",
+        "title": "Add Workspace to Window",
+        "category": "File"
+      },
+      {
+        "command": "workspaceTabs.removeWorkspace",
+        "title": "Remove Workspace from Window",
+        "category": "File"
+      },
+      {
+        "command": "workspaceTabs.show",
+        "title": "Show Workspace Tabs",
+        "category": "Workspace Tabs"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        { "command": "workspaceTabs.addWorkspace" },
+        { "command": "workspaceTabs.removeWorkspace" },
+        { "command": "workspaceTabs.show" }
+      ],
+      "menuBar/file": [
+        {
+          "command": "workspaceTabs.addWorkspace",
+          "group": "2_workspace@1"
+        },
+        {
+          "command": "workspaceTabs.removeWorkspace",
+          "group": "2_workspace@2"
+        }
+      ]
+    }
   },
   "scripts": {
     "compile": "tsc -p ./",
