@@ -1,0 +1,27 @@
+{
+  "name": "workspace-tabs",
+  "displayName": "Workspace Tabs",
+  "description": "Color-coded tab bar for switching between VS Code workspaces",
+  "version": "0.0.1",
+  "engines": { "vscode": "^1.74.0" },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [],
+    "menus": {}
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "mocha --require ts-node/register 'src/test/**/*.test.ts'"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.74.0",
+    "mocha": "^10.0.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^5.0.0"
+  }
+}
