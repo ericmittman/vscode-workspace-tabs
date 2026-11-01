@@ -19,13 +19,15 @@ export class TabBarPanel {
     this.panel = vscode.window.createWebviewPanel(
       'workspaceTabs',
       'Workspaces',
-      { viewColumn: vscode.ViewColumn.One, preserveFocus: true },
+      { viewColumn: vscode.ViewColumn.One, preserveFocus: false },
       { enableScripts: true, retainContextWhenHidden: true }
     );
     this.disposed = false;
     this.context.subscriptions.push(this.panel);
 
-    this.panel.onDidDispose(() => { this.disposed = true; });
+    this.panel.onDidDispose(() => {
+      this.disposed = true;
+    });
 
     this.panel.webview.onDidReceiveMessage(
       (msg: { command: string; path?: string }) => {
@@ -61,6 +63,9 @@ export class TabBarPanel {
   }
 
   private buildHtml(entries: WorkspaceEntry[], activePath: string | undefined): string {
+    const emptyHint = entries.length === 0
+      ? `<span class="empty-hint">No workspaces — click + to add one</span>`
+      : '';
     const tabs = entries.map(e => {
       const isActive = e.path === activePath;
       const bg = isActive ? hexToRgba(e.color, 0.15) : 'transparent';
@@ -98,20 +103,28 @@ export class TabBarPanel {
     align-items: center;
   }
   .tab:hover { background: rgba(255,255,255,0.07) !important; }
+  .empty-hint {
+    display: flex;
+    align-items: center;
+    padding: 6px 16px;
+    color: #888;
+    font-style: italic;
+  }
   .add-btn {
     padding: 6px 12px;
-    color: #666;
+    color: #cccccc;
     cursor: pointer;
     display: flex;
     align-items: center;
     font-size: 18px;
     line-height: 1;
   }
-  .add-btn:hover { color: #ccc; }
+  .add-btn:hover { color: #ffffff; }
 </style>
 </head>
 <body>
   ${tabs}
+  ${emptyHint}
   <div class="add-btn" title="Add Workspace to Window">+</div>
   <script>
     const vscode = acquireVsCodeApi();
